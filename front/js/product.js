@@ -1,24 +1,23 @@
 
-//Access the URL using javascript
+//Access the URL using javascript variable URLSearchParms 
 const urlSearchParams = new URLSearchParams(window.location.search);
 let productId = urlSearchParams.get('id');
-console.log(productId);
 
-// Use the response of the API to populate HTML
-function updateProductDetails(productDetails){
-    console.log(productDetails);
+
+// this function is use the response of the API  and populate HTMl contain
+function updateProductDetails(productDetails){ 
 
 // Add Price, Description, product image, product title, colors
     let productImage = document.getElementById('productimage1');
-    console.log(productImage);
+   // console.log(productImage);
     productImage.src = productDetails.imageUrl;
     
     let productName  = document.getElementById('title');
-    console.log(productName);
+    //console.log(productName);
     productName.textContent = productDetails.name;
 
     let priceElement = document.getElementById('price');
-    console.log(priceElement);
+    //console.log(priceElement);
     priceElement.textContent = productDetails.price;
    
     let productDiscription = document.getElementById('description');
@@ -36,12 +35,14 @@ function updateProductDetails(productDetails){
 
     //add event listener on the click event
     let addToCartBtn = document.getElementById('addToCart');
-
+    // 
     function addToCart()
     { 
+        //when user add product to cart it will store inside the localStorage and used when user go to the cart page .
         if (! localStorage.getItem('productcart')) {
             basketContent = [];
         } else {
+            //JavaScript built-in function JSON.parse() to convert the string into a JavaScript object
             basketContent = JSON.parse(localStorage.getItem('productcart'))
         }
 
@@ -63,9 +64,11 @@ function updateProductDetails(productDetails){
                 productAdd.itemQuantity += basketContent[i].itemQuantity
                 basketContent.splice(i, 1);
             }
-            //if (quantitySelect.value <= 0) {
-              //  alert('Please input correct value!')
-               // return false    
+            if (quantitySelect.value < 1)  {
+                alert('Please input correct value!')
+                return false    
+            }
+                
         }
 
         basketContent.push(productAdd);
@@ -75,13 +78,12 @@ function updateProductDetails(productDetails){
 
 
     addToCartBtn.addEventListener('click', addToCart);
-        console.log('Test')
      
 }
-//From URL retrieve the product identifier - From URL,  retrieve query parameter
+
 // Make an API call with the product identifier from previous step
 fetch(`http://localhost:3000/api/products/${productId}`)
+//Json Read data from web and display in web in systematic way 
     .then(response => response.json())
+    // then is a chain of call back for sucessfull resolve or reject promise
     .then(data => updateProductDetails(data));
-    
- 

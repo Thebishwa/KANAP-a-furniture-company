@@ -1,16 +1,19 @@
+//server accepts HTTP request from the addToCart function and passes them on to our requestListener() function.
 const server = 'http://localhost:3000/';
 const productsApi = `${server}api/products/`;
 const productsApiOrder = `${productsApi}order`
-
+//an sync function used to declare with in the query and await permited within it and 
+//it allows promised based behaviour configure and promise chains
 async function getContent(query) {
-    const response = await fetch(query);
+    const response = await fetch(query); //used to wait for a Promise
     const data = await response.json();
     return data;
 }
 
-//dom content
+// Locating DOM elements using query selectors in the cart item
 const cartContent = document.querySelector('#cart__items');
 const basketContent = JSON.parse(localStorage.getItem('productcart'))
+//JSON parsing is the process of converting a JSON object in text format to a Javascript object that can be used inside a program.
 
 //form content
 const firstNameInput = document.querySelector('#firstName');
@@ -21,13 +24,13 @@ const emailInput = document.querySelector('#email');
 const submitOrderBtn = document.querySelector('#order');
 const inputArray = [firstNameInput, lastNameInput, addressInput, cityInput, emailInput]
 
-//form input check
+//reemail RegExp which is used identify and validate  paticular format of the email address 
 function emailvalidation(emailval) {
     const reemail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    var emailreg = new RegExp(reemail)
+    var emailreg = new RegExp(reemail) //RegExp is regular expression
     return emailreg.test(emailval);
 }
-
+//username validation function declaration
 function namevalidation(nameval) {
     const rename = "^[a-zA-Z ,.'-]+$";
     var namereg = new RegExp(rename)
@@ -70,14 +73,14 @@ function formValidation() {
     }
 
     if (emptyInput > 0) {
-        alert('Please fill all highlighted fields!')
+        alert('Please input correct address!')
         return false
     } else {
         return true       
     }
 }
 
-//generate cart product page structure
+//generate cart product page structure dynamically by generateNodes method
 function generateNodes() {
     cartContent.innerHTML = '';
     for (let i = 0; i < basketContent.length; i++) {
@@ -89,8 +92,7 @@ function generateNodes() {
     }
     enableForm();
 }
-
-//insert html content
+//displayItems shows the contain of the cart which repeated  from the localStorage 
 function displayItems(items) {
     const itemNodes = document.querySelectorAll('.item-node');
     let itemIndex = 0;
@@ -147,7 +149,7 @@ function displayTotalPrice() {
     var elemsIdBasic = "item-price-";
     totalQtt = 0;
     totalPrice = 0;//    
-
+// for loop to run the same code over and over again, each time with a different value.
     for (var i = 0; i < myLength; ++i) {
         totalQtt += elemsQtt[i].valueAsNumber;
         //
@@ -169,9 +171,10 @@ function displayTotalPrice() {
 
 }
 
-//insert html content final
+
+//The purpose of async/await is to simplify the syntax necessary to consume promise-based API. 
 async function fetchCart(query) {
-    
+    //condition apply if the cart is empty.
     if (basketContent && basketContent.length > 0) {
         generateNodes();
         await getContent(query).then(items => {
@@ -193,7 +196,7 @@ async function fetchCart(query) {
     }    
 }
 
-//delete item
+//delete item from the basket
 function removeItem(event) {
     let itemIndex = event.target.id.split('-')[2];
     console.log(itemIndex);
@@ -202,10 +205,10 @@ function removeItem(event) {
     fetchCart(productsApi);
     displayTotalPrice();
 };
-
+//this function render the contain form the localStorage and show the displayItem in the cart page.
 fetchCart(productsApi);
 
-//place order
+//place order and form validaton
 async function placeOrder(event) {
     event.preventDefault();
     if (formValidation()) {
@@ -239,5 +242,5 @@ async function placeOrder(event) {
         return
     }
 };
-
+//submit order by addEventListener click event
 submitOrderBtn.addEventListener('click', placeOrder);
